@@ -1,0 +1,17 @@
+{
+  "name": "preprocess-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "cross-env NODE_ENV=dev node build.js",
+    "build:pro": "cross-env NODE_ENV=pro node build.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cross-env": "^7.0.2",
+    "preprocess": "^3.2.0"
+  }
+}
