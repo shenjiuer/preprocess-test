@@ -1,0 +1,9 @@
+{
+  "c": 1,
+  // @if NODE_ENV='dev'
+  "a": 1
+  // @endif
+  // @if NODE_ENV='pro'
+  "a": 2
+  // @endif
+}

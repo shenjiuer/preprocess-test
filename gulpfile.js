@@ -9,7 +9,12 @@ const distPath = "./dist/";
 
 const htmlFiles = [`${srcPath}/*.html`];
 const cssFiles = [`${srcPath}/*.css`];
-const jsFiles = [`${srcPath}/*.js`];
+const jsFiles = [`${srcPath}/*.js`, `${srcPath}/*.wxs`];
+const imageFiles = [
+	`${srcPath}/resources/*.{png,jpg,gif,ico}`,
+	`${srcPath}/resources/**/*.{png,jpg,gif,ico}`
+];
+const jsonFiles = [`${srcPath}/*.json`];
 
 const env = process.env.NODE_ENV
 
@@ -53,7 +58,7 @@ const css = () => {
 		.pipe(
 			tap(file => {
 				let contents = file.contents.toString("utf8")
-				contents = pp.preprocess(file.contents, {NODE_ENV: env}, {type: 'css'})
+				contents = pp.preprocess(contents, {NODE_ENV: env}, {type: 'css'})
 				file.contents = Buffer.from(contents)
 			})
 		)
@@ -61,17 +66,40 @@ const css = () => {
 };
 gulp.task(css);
 
+const img = () => {
+	return gulp
+		.src(imageFiles, { since: gulp.lastRun(img) })
+		.pipe(gulp.dest(distPath));
+};
+gulp.task(img);
+
+const json = () => {
+	return gulp
+		.src(jsonFiles, { since: gulp.lastRun(json) })
+		.pipe(
+			tap(file => {
+				let contents = file.contents.toString("utf8")
+				contents = pp.preprocess(contents, {NODE_ENV: env}, {type: 'json'})
+				file.contents = Buffer.from(contents)
+			})
+		)
+		.pipe(gulp.dest(distPath));
+};
+gulp.task(json);
+
 gulp.task("watch", () => {
   gulp.watch(cssFiles, css);
   gulp.watch(jsFiles, js);
   gulp.watch(htmlFiles, html);
+	gulp.watch(imageFiles, img);
+	gulp.watch(jsonFiles, json)
 });
 // parallel 相当于promise.all
 gulp.task(
   "dev",
   gulp.series(
     "clean",
-    gulp.parallel("html", "js", "css"),
+    gulp.parallel("html", "js", "css", "img", "json"),
     "watch"
   )
 );
@@ -80,6 +108,6 @@ gulp.task(
   "pro",
   gulp.series(
     "clean",
-    gulp.parallel("html", "js", "css")
+    gulp.parallel("html", "js", "css", "img", "json")
   )
 );
