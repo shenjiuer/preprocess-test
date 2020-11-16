@@ -1,0 +1,7 @@
+const log =  (value) => {
+    return 'log' + value
+}
+
+module.exports = {
+    log
+}
